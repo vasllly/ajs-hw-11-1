@@ -4,9 +4,16 @@ import readGameSaving from './readGameSaving';
 
 export default class GameSavingLoader {
   load() {
-    return readGameSaving().then((buffer) => {
-      const save = new GameSavingData(buffer);
-      return save.json();
+    return new Promise((resolve, reject) => {
+      readGameSaving().then((buffer) => {
+        const save = new GameSavingData(buffer);
+        const data = save.json();
+        if (data) {
+          resolve(data);
+        } else {
+          reject();
+        }
+      }).catch(() => 'Данные не получены');
     });
   }
 }
