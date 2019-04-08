@@ -4,16 +4,9 @@ import readGameSaving from './readGameSaving';
 
 export default class GameSavingLoader {
   load() {
-    return new Promise((resolve, reject) => {
-      readGameSaving().then((buffer) => {
-        const save = new GameSavingData(buffer);
-        const data = save.json();
-        if (data) {
-          resolve(data);
-        } else {
-          reject();
-        }
-      }).catch(() => 'Данные не получены');
-    });
+    return readGameSaving()
+      .then(buffer => (buffer ? new GameSavingData(buffer) : new Error('Данные не получены')))
+      .then(buffer => buffer.json() || new Error('Данные не получены'))
+      .catch(() => 'Данные не получены');
   }
 }
